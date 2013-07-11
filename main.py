@@ -55,21 +55,22 @@ class Node(object):
 
 
     def explicit_properties(self):
-        if self.title is None or self.title == ''             : self.explicit_property('title')
-        if self.keywords is None or self.keywords == ''       : self.explicit_property('keywords')
-        if self.description is None or self.description == '' : self.explicit_property('description')
-        if self.template is None or self.template == ''       : self.explicit_property('template')
-        if self.contentType is None or self.contentType == ''     : self.explicit_property('contentType')
-        if self.contentSource is None or self.contentSource == '' : self.explicit_property('contentSource')
+        self.explicit_property('title')
+        self.explicit_property('keywords')
+        self.explicit_property('description')
+        self.explicit_property('template')
+        self.explicit_property('contentType')
+        self.explicit_property('contentSource')
 
 
     def explicit_property(self, prop):
         value = getattr(self, prop)
-        parent = self.get_parent()
-        while (value is None or value == '') and parent is not None:
-            value = getattr(parent, prop)
-            parent = parent.get_parent()
-        setattr(self, prop, value)
+        if (value is None or value == ''):
+            parent = self.get_parent()
+            while (value is None or value == '') and parent is not None:
+                value = getattr(parent, prop)
+                parent = parent.get_parent()
+            setattr(self, prop, value)
 
 
     def explicit_content(self):
@@ -168,11 +169,11 @@ def index():
 @app.route("/<path:path>.html")
 def content(path):
     node = site.get_node_by_uri(path)
-    node.explicit_properties()
     if None == node:
         abort(404)
 
     try:
+        node.explicit_properties()
         node.explicit_content()
         return render_template(node.template, node=node)
     except Exception, e:
@@ -192,16 +193,6 @@ def init_site():
     if True: # run always site.xml is None:
         site.init_with_xml("./data/site.xml")
         site.validate_tree(site, 0)     
-
-
-# def read_file(filename, charset='utf-8'):
-#     with open(filename, 'r') as f:
-#         return f.read().decode(charset)
-
-
-# def write_file(filename, contents, charset='utf-8'):
-#     with open(filename, 'w') as f:
-#         f.write(contents.encode(charset))
 
 
 if __name__ == "__main__":
