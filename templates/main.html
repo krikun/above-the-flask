@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        {% if node %}    {% autoescape false %}<!-- {{ node }} -->{% endautoescape %}        
+        <title>{{ node.title }}</title>
+        {% if node.keywords %}<meta name="keywords" content="{{ node.keywords }}">{% endif %}
+        {% if node.description %}<meta name="description" content="{{ node.description }}">{% endif %}
+        {% endif %}  
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <style type="text/css">
+
+        </style>
+    </head> 
+    <body>{% block body %}{% endblock %}</body>
+</html>

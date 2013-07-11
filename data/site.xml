@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This XML describes a structure and perhaps content of your site.
+"Site" is the root tag and there children describes a common site's properties and set of "nodes".
+Every 'node' tag must have attribute 'slug' that will be part for url. 'a' in /a/b/c.html is a slug for very first node.
+A tags 'title', 'keywords', 'description', 'template', 'content' can be overrided inside every 'node' if you wish.
+Tag "content" has attribute "type"="markdown|html" (html as default if tag has no this  attribute)
+Tag "content" has attribute "source"="file|inline" (inline as default if tag has no this attribute)
+For example:
+<content source="file">./a.html</content> will read content from file './data/a.html' and parse it as-is.
+<content source="inline" type="markdown"><![CDATA[# This is markdown header #]]></content> gets content from the tag's content and parse it as markdown.
+Invalid 'node' tags should be marked as (state=0xbad)
+-->
+<site>
+    <title>Flask from scratch</title>
+    <keywords>Site keywords</keywords>
+    <description>Site description</description>
+    <template>content.html</template>
+    <content type="html" />
+    <node state="0" slug="a">
+        <content source="file" type="markdown">/a.md</content>
+        <node state="1" slug="b">
+            <content source="file">/b.html</content>
+            <node state="2" slug="c">
+                <title>title</title>
+                <template>content.html</template>
+                <content type="markdown"></content>                
+            </node>
+        </node>
+        <node state="?">
+            <!-- This node has no attribute 'slug' and will be marked as invalid.  -->
+        </node>
+    </node>
+</site>
