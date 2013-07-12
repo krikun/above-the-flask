@@ -77,23 +77,28 @@ class Node(object):
         print "Explicit content for source=%s & type=%s for node %s" % (self.contentSource, self.contentType, self.xpath)
         
         if self.contentSource is None or self.contentSource == 'inline':     # inline content
+            print "Find content inline by xpath="+self.xpath+'/content' 
             self.content = self.site.get_xml_by_xpath(self.xpath+'/content', True)
         elif self.contentSource == 'file': # read from local file
             filename = './data' + self.site.get_xml_by_xpath(self.xpath+'/content', True)
-            self.content = open(filename, 'r').read()            
+            try:
+                self.content = open(filename, 'r').read()  
+            except Exception, e:
+                self.content = None
+                print "Unable to read content from file "+filename
         else: # WTF?
             print "Unknown contentSource=%s on node %s" % (self.contentSource, self.xpath) 
 
-        if self.contentType is None or 'html' == self.contentType: # default case
-            pass
-        elif 'markdown' == self.contentType or 'md' == self.contentType:
-            import markdown2
-            self.content = markdown2.markdown(self.content)
-        else: # WTF?
-            print "Unknown contentType=%s on node %s" % (self.contentType, self.xpath) 
-
         if self.content is None: 
             print "Content not found"
+        else:    
+            if self.contentType is None or 'html' == self.contentType: # default case
+                pass
+            elif 'markdown' == self.contentType or 'md' == self.contentType:
+                import markdown2
+                self.content = markdown2.markdown(self.content)
+            else: # WTF?
+                print "Unknown contentType=%s on node %s" % (self.contentType, self.xpath) 
 
 
     def __str__(self):
